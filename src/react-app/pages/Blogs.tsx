@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
 import { FileText, Clock, ArrowRight } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 type BlogPostListItem = {
   id: number;
@@ -24,8 +25,9 @@ export default function BlogsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/blog-posts");
-        const data = await res.json();
+        const data = await getJson<{ posts: BlogPostListItem[] }>(
+          "/api/blog-posts",
+        );
         setPosts(data.posts ?? []);
       } catch (e) {
         console.error("Failed to fetch blog posts", e);

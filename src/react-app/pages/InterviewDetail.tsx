@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router";
 import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
 import { ChevronLeft, Users, Building2 } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 type InterviewExperience = {
   id: number;
@@ -30,9 +31,9 @@ export default function InterviewDetailPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`/api/interviews/${slug}`);
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await getJson<{ interview: InterviewExperience | null }>(
+          `/api/interviews/${slug}`,
+        );
         setInterview(data.interview ?? null);
       } catch (e) {
         console.error("Failed to fetch interview", e);

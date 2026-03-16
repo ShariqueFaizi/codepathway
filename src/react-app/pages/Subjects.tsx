@@ -4,6 +4,7 @@ import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
 import SheetCard from "@/react-app/components/sheets/SheetCard";
 import { Cpu } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 type Sheet = {
   id: number;
@@ -28,8 +29,9 @@ export default function SubjectsPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/sheets?category=core-cs");
-        const data = await res.json();
+        const data = await getJson<{ sheets: Sheet[] }>(
+          "/api/sheets?category=core-cs",
+        );
         setSheets(data.sheets ?? []);
       } catch (e) {
         console.error("Failed to fetch Core CS sheets", e);

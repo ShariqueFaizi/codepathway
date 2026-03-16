@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Sparkles
 } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 interface Topic {
   id: number;
@@ -66,16 +67,15 @@ export function SheetDetail() {
   useEffect(() => {
     async function fetchSheet() {
       try {
-        const res = await fetch(`/api/sheets/${slug}`);
-        if (res.ok) {
-          const data = await res.json();
-          setSheet(data.sheet);
-          setSections(data.sections);
-          // Expand all sections by default
-          setExpandedSections(new Set(data.sections.map((s: Section) => s.id)));
-          if (data.sections.length > 0) {
-            setActiveSection(data.sections[0].id);
-          }
+        const data = await getJson<{ sheet: Sheet; sections: Section[] }>(
+          `/api/sheets/${slug}`,
+        );
+        setSheet(data.sheet);
+        setSections(data.sections);
+        // Expand all sections by default
+        setExpandedSections(new Set(data.sections.map((s: Section) => s.id)));
+        if (data.sections.length > 0) {
+          setActiveSection(data.sections[0].id);
         }
       } catch (err) {
         console.error("Failed to fetch sheet:", err);

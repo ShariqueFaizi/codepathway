@@ -4,6 +4,7 @@ import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
 import SheetCard from "@/react-app/components/sheets/SheetCard";
 import { Code2 } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 type Sheet = {
   id: number;
@@ -28,8 +29,9 @@ export default function SystemDesignPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/sheets?category=system-design");
-        const data = await res.json();
+        const data = await getJson<{ sheets: Sheet[] }>(
+          "/api/sheets?category=system-design",
+        );
         setSheets(data.sheets ?? []);
       } catch (e) {
         console.error("Failed to fetch system design sheets", e);

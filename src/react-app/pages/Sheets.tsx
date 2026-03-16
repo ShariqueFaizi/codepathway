@@ -4,6 +4,7 @@ import Footer from "@/react-app/components/layout/Footer";
 import SheetCard from "@/react-app/components/sheets/SheetCard";
 import SheetFilters from "@/react-app/components/sheets/SheetFilters";
 import { Layers, Sparkles } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 interface Sheet {
   id: number;
@@ -41,12 +42,10 @@ export default function SheetsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [sheetsRes, categoriesRes] = await Promise.all([
-          fetch("/api/sheets"),
-          fetch("/api/categories"),
+        const [sheetsData, categoriesData] = await Promise.all([
+          getJson<{ sheets: Sheet[] }>("/api/sheets"),
+          getJson<{ categories: Category[] }>("/api/categories"),
         ]);
-        const sheetsData = await sheetsRes.json();
-        const categoriesData = await categoriesRes.json();
         setSheets(sheetsData.sheets || []);
         setCategories(categoriesData.categories || []);
       } catch (error) {

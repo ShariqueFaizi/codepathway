@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
+import { getJson } from "@/react-app/lib/api";
 
 type Testimonial = {
   id: number;
@@ -18,8 +19,9 @@ export default function Testimonials() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/testimonials");
-        const data = await res.json();
+        const data = await getJson<{ testimonials: Testimonial[] }>(
+          "/api/testimonials",
+        );
         setTestimonials(data.testimonials ?? []);
       } catch (e) {
         console.error("Failed to fetch testimonials", e);

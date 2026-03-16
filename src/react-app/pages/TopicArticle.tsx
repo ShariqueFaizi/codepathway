@@ -21,6 +21,7 @@ import { Button } from "@/react-app/components/ui/button";
 import { Badge } from "@/react-app/components/ui/badge";
 import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
+import { getJson } from "@/react-app/lib/api";
 import hljs from "highlight.js/lib/core";
 import javascript from "highlight.js/lib/languages/javascript";
 import python from "highlight.js/lib/languages/python";
@@ -136,13 +137,14 @@ export default function TopicArticle() {
   useEffect(() => {
     async function fetchTopic() {
       try {
-        const res = await fetch(`/api/topics/${sheetSlug}/${topicSlug}`);
-        if (res.ok) {
-          const data = await res.json();
-          setTopic(data.topic);
-          setPrevTopic(data.prevTopic);
-          setNextTopic(data.nextTopic);
-        }
+        const data = await getJson<{
+          topic: Topic;
+          prevTopic: AdjacentTopic | null;
+          nextTopic: AdjacentTopic | null;
+        }>(`/api/topics/${sheetSlug}/${topicSlug}`);
+        setTopic(data.topic);
+        setPrevTopic(data.prevTopic);
+        setNextTopic(data.nextTopic);
       } catch (error) {
         console.error("Failed to fetch topic:", error);
       } finally {
