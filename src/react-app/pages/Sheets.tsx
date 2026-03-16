@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router";
 import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
 import SheetCard from "@/react-app/components/sheets/SheetCard";

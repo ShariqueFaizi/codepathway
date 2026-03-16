@@ -13,8 +13,7 @@ import {
   Circle,
   ChevronDown,
   ChevronRight,
-  Sparkles,
-  Code2
+  Sparkles
 } from "lucide-react";
 
 interface Topic {
@@ -257,7 +256,9 @@ export function SheetDetail() {
               {sections.map((section) => (
                 <div 
                   key={section.id}
-                  ref={el => sectionRefs.current[section.id] = el}
+                  ref={(el) => {
+                    sectionRefs.current[section.id] = el;
+                  }}
                   className="scroll-mt-24"
                 >
                   <button

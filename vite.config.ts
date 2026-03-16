@@ -7,24 +7,27 @@ import { mochaPlugins } from "@getmocha/vite-plugins";
 
 export default defineConfig({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	  plugins: [
-	    ...mochaPlugins(process.env as any),
-	    react(),
-	    cloudflare(() => {
-	      const emailsConfigPath =
-	        process.env.MOCHA_EMAILS_WRANGLER_CONFIG_PATH ??
-	        path.resolve(__dirname, "emails-service", "wrangler.json");
+  plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...mochaPlugins(process.env as any),
+    react(),
+    (() => {
+      const emailsConfigPath =
+        process.env.MOCHA_EMAILS_WRANGLER_CONFIG_PATH ??
+        path.resolve(__dirname, "emails-service", "wrangler.json");
 
-	      return {
-	        auxiliaryWorkers: fs.existsSync(emailsConfigPath)
-	          ? [{ configPath: emailsConfigPath }]
-	          : undefined,
-	      };
-	    }),
-	  ],
-	  server: {
-	    allowedHosts: true,
-	  },
+      const auxiliaryWorkers = fs.existsSync(emailsConfigPath)
+        ? [{ configPath: emailsConfigPath }]
+        : [];
+
+      return cloudflare({
+        auxiliaryWorkers,
+      });
+    })(),
+  ],
+  server: {
+    allowedHosts: true,
+  },
   build: {
     chunkSizeWarningLimit: 5000,
   },
