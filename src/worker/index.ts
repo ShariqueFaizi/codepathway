@@ -234,7 +234,7 @@ app.get("/api/sheets/:slug", async (c) => {
   });
 });
 
-// Get single topic with article content
+// Get single topic with article content, starter code, and test cases
 app.get("/api/topics/:sheetSlug/:topicSlug", async (c) => {
   const db = c.env.DB;
   const { sheetSlug, topicSlug } = c.req.param();
@@ -262,11 +262,19 @@ app.get("/api/topics/:sheetSlug/:topicSlug", async (c) => {
     return c.json({ error: "Topic not found" }, 404);
   }
 
+  // Get test cases for this topic
+  const testCasesResult = await db.prepare(`
+    SELECT id, input, expected_output, is_hidden
+    FROM topic_test_cases
+    WHERE topic_id = ?
+  `).bind(topic.id).all();
+  const testCases = testCasesResult.results;
+
   // If there's no article content, scrape it
   if (!topic.article_content) {
     try {
       const scrapeUrl = new URL(c.req.url);
-      scrapeUrl.pathname = `/api/scrape/${topicSlug}`;
+      scrapeUrl.pathname = \`/api/scrape/${topicSlug}\`;
       const response = await fetch(scrapeUrl.toString());
       if (response.ok) {
         const { articleContent } = await response.json();
@@ -295,6 +303,7 @@ app.get("/api/topics/:sheetSlug/:topicSlug", async (c) => {
   
   return c.json({ 
     topic,
+    testCases,
     prevTopic,
     nextTopic
   });
