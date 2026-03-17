@@ -9,6 +9,7 @@ import InterviewsPage from "@/react-app/pages/Interviews";
 import InterviewDetailPage from "@/react-app/pages/InterviewDetail";
 import BlogsPage from "@/react-app/pages/Blogs";
 import BlogDetailPage from "@/react-app/pages/BlogDetail";
+import Playground from "@/react-app/pages/Playground"; // Import the new Playground page
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/interviews/:slug" element={<InterviewDetailPage />} />
         <Route path="/blogs" element={<BlogsPage />} />
         <Route path="/blogs/:slug" element={<BlogDetailPage />} />
+        <Route path="/playground" element={<Playground />} /> {/* Add the new route */}
       </Routes>
     </Router>
   );

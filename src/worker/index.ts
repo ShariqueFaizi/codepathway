@@ -2,8 +2,11 @@ import { Hono } from "hono";
 import type { Env } from "./env";
 import axios from 'axios';
 import cheerio from 'cheerio';
+import executionApp from './execution';
 
 const app = new Hono<{ Bindings: Env }>();
+
+app.route('/', executionApp);
 
 // Scrape route for takeuforward articles
 app.get("/api/scrape/:slug", async (c) => {
