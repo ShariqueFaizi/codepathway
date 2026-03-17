@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { postJson } from '@/react-app/lib/api';
 
 interface CodeSandboxProps {
   starterCode: {
@@ -15,6 +16,11 @@ interface CodeSandboxProps {
     expected_output: string;
     is_hidden: boolean;
   }[];
+}
+
+interface ExecutionResponse {
+  output: string;
+  testResults: any[];
 }
 
 export default function CodeSandbox({ starterCode, testCases }: CodeSandboxProps) {
@@ -31,19 +37,26 @@ export default function CodeSandbox({ starterCode, testCases }: CodeSandboxProps
 
   const handleRunCode = async () => {
     setIsRunning(true);
-    setOutput('');
+    setOutput('Running code...');
     setTestResults([]);
 
-    // I will implement the code execution and test case evaluation here in the next step.
-    // For now, let's simulate a delay and some dummy output.
-    setTimeout(() => {
-      setOutput('Running code...\n(Execution logic not implemented yet)');
+    try {
+      const result = await postJson<ExecutionResponse>('/api/execute', { 
+        code, 
+        language, 
+      });
+      setOutput(result.output);
+      // The backend should return test results in the final implementation
+      // For now, we'll continue to use dummy data.
       setTestResults([
         { input: testCases[0].input, expected: testCases[0].expected_output, actual: '[0, 1]', pass: true },
         { input: testCases[1].input, expected: testCases[1].expected_output, actual: '[1, 2]', pass: true },
       ]);
+    } catch (error: any) {
+      setOutput(`Error: ${error.message}`);
+    } finally {
       setIsRunning(false);
-    }, 1000);
+    }
   };
 
   return (

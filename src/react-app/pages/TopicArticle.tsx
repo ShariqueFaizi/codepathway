@@ -21,21 +21,8 @@ import { Button } from "@/react-app/components/ui/button";
 import { Badge } from "@/react-app/components/ui/badge";
 import Navbar from "@/react-app/components/layout/Navbar";
 import Footer from "@/react-app/components/layout/Footer";
+import CodeSandbox from "@/react-app/components/CodeSandbox";
 import { getJson } from "@/react-app/lib/api";
-import hljs from "highlight.js/lib/core";
-import javascript from "highlight.js/lib/languages/javascript";
-import python from "highlight.js/lib/languages/python";
-import cpp from "highlight.js/lib/languages/cpp";
-import java from "highlight.js/lib/languages/java";
-
-// Register languages
-hljs.registerLanguage("javascript", javascript);
-hljs.registerLanguage("js", javascript);
-hljs.registerLanguage("python", python);
-hljs.registerLanguage("py", python);
-hljs.registerLanguage("cpp", cpp);
-hljs.registerLanguage("c++", cpp);
-hljs.registerLanguage("java", java);
 
 interface Topic {
   id: number;
@@ -53,6 +40,16 @@ interface Topic {
   article_content: string | null;
   article_summary: string | null;
   reading_time_minutes: number | null;
+  starter_code_javascript?: string;
+  starter_code_python?: string;
+  starter_code_java?: string;
+}
+
+interface TestCase {
+  id: number;
+  input: string;
+  expected_output: string;
+  is_hidden: boolean;
 }
 
 interface AdjacentTopic {
@@ -70,6 +67,7 @@ const difficultyColors: Record<string, string> = {
 export default function TopicArticle() {
   const { sheetSlug, topicSlug } = useParams();
   const [topic, setTopic] = useState<Topic | null>(null);
+  const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [prevTopic, setPrevTopic] = useState<AdjacentTopic | null>(null);
   const [nextTopic, setNextTopic] = useState<AdjacentTopic | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,10 +78,12 @@ export default function TopicArticle() {
       try {
         const data = await getJson<{
           topic: Topic;
+          testCases: TestCase[];
           prevTopic: AdjacentTopic | null;
           nextTopic: AdjacentTopic | null;
         }>(`/api/topics/${sheetSlug}/${topicSlug}`);
         setTopic(data.topic);
+        setTestCases(data.testCases);
         setPrevTopic(data.prevTopic);
         setNextTopic(data.nextTopic);
       } catch (error) {
@@ -94,17 +94,6 @@ export default function TopicArticle() {
     }
     fetchTopic();
   }, [sheetSlug, topicSlug]);
-
-  useEffect(() => {
-    if (topic && topic.article_content) {
-      // Use a timeout to ensure the DOM is updated
-      setTimeout(() => {
-        document.querySelectorAll('pre code').forEach((block) => {
-          hljs.highlightElement(block as HTMLElement);
-        });
-      }, 0);
-    }
-  }, [topic]);
 
   if (loading) {
     return (
@@ -201,8 +190,18 @@ export default function TopicArticle() {
           </div>
         </header>
 
+        {/* Code Sandbox */}
+        <CodeSandbox 
+          starterCode={{
+            javascript: topic.starter_code_javascript,
+            python: topic.starter_code_python,
+            java: topic.starter_code_java,
+          }}
+          testCases={testCases}
+        />
+
         {/* Article Content */}
-        <article className="prose prose-invert max-w-none">
+        <article className="prose prose-invert max-w-none mt-12">
           {topic.article_content ? (
             <div dangerouslySetInnerHTML={{ __html: topic.article_content }} />
           ) : (
