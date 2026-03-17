@@ -1,5 +1,6 @@
 import { Button } from "@/react-app/components/ui/button";
 import { ArrowRight, Sparkles, Users, BookOpen, Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const stats = [
   { label: "Problems Covered", value: "450+", icon: BookOpen },
@@ -8,6 +9,8 @@ const stats = [
 ];
 
 export default function HeroSection() {
+  const navigate = useNavigate();
+
   return (
     <section className="relative min-h-[90vh] flex items-center pt-16 overflow-hidden">
       {/* Background Effects */}
@@ -64,11 +67,11 @@ export default function HeroSection() {
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
-              <Button size="lg" className="w-full sm:w-auto glow text-base px-8">
+              <Button size="lg" className="w-full sm:w-auto glow text-base px-8" onClick={() => navigate('/sheets')}>
                 Start Learning Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto text-base px-8" onClick={() => navigate('/sheets')}>
                 <BookOpen className="w-5 h-5 mr-2" />
                 Explore Sheets
               </Button>

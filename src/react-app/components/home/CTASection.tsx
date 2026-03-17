@@ -1,7 +1,9 @@
 import { Button } from "@/react-app/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function CTASection() {
+  const navigate = useNavigate();
   return (
     <section className="py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,8 +30,8 @@ export default function CTASection() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-white text-primary hover:bg-white/90 text-base px-8 shadow-xl"
-              >
+                className="glow text-base px-8 shadow-xl"
+                onClick={() => navigate('/sheets')}>
                 Start Learning Free
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -37,7 +39,7 @@ export default function CTASection() {
                 size="lg"
                 variant="outline"
                 className="border-white/30 text-white hover:bg-white/10 text-base px-8"
-              >
+                onClick={() => navigate('/sheets')}>
                 Explore DSA Sheets
               </Button>
             </div>

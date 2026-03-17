@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { Button } from "@/react-app/components/ui/button";
 import {
   Menu,
@@ -13,6 +13,7 @@ import {
   FileText,
   Layers,
   Command,
+  ArrowRight,
 } from "lucide-react";
 
 const navLinks = [
@@ -114,8 +115,8 @@ export default function Navbar() {
               Sign In
             </Button>
             <Button size="sm" className="glow-sm">
-              <BookOpen className="w-4 h-4 mr-1.5" />
-              Start Learning
+              <ArrowRight className="w-4 h-4 mr-1.5" />
+              Start Learning Free
             </Button>
           </div>
 
@@ -168,8 +169,8 @@ export default function Navbar() {
                 Sign In
               </Button>
               <Button className="w-full justify-center glow-sm">
-                <BookOpen className="w-4 h-4 mr-1.5" />
-                Start Learning
+                <ArrowRight className="w-4 h-4 mr-1.5" />
+                Start Learning Free
               </Button>
             </div>
           </div>

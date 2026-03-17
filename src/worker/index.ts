@@ -1,7 +1,24 @@
 import { Hono } from "hono";
 import type { Env } from "./env";
+import axios from 'axios';
+import cheerio from 'cheerio';
 
 const app = new Hono<{ Bindings: Env }>();
+
+// Scrape route for takeuforward articles
+app.get("/api/scrape/:slug", async (c) => {
+  const { slug } = c.req.param();
+  const url = `https://www.takeuforward.org/data-structure/${slug}`;
+
+  try {
+    const { data } = await axios.get(url);
+    const $ = cheerio.load(data);
+    const articleContent = $('.inside-article').html();
+    return c.json({ articleContent });
+  } catch (error) {
+    return c.json({ error: 'Failed to scrape content' }, 500);
+  }
+});
 
 // Get all sheets with category info
 app.get("/api/sheets", async (c) => {
@@ -240,6 +257,21 @@ app.get("/api/topics/:sheetSlug/:topicSlug", async (c) => {
   
   if (!topic) {
     return c.json({ error: "Topic not found" }, 404);
+  }
+
+  // If there's no article content, scrape it
+  if (!topic.article_content) {
+    try {
+      const scrapeUrl = new URL(c.req.url);
+      scrapeUrl.pathname = `/api/scrape/${topicSlug}`;
+      const response = await fetch(scrapeUrl.toString());
+      if (response.ok) {
+        const { articleContent } = await response.json();
+        topic.article_content = articleContent;
+      }
+    } catch (e) {
+      console.error('Scraping failed', e);
+    }
   }
   
   // Get adjacent topics for navigation
